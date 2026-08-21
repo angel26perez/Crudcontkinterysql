@@ -31,7 +31,7 @@ ancho = 1100
 alto = 650
 
 #icono de la ventana 
-if RUTA_ICONO.exist():
+if RUTA_ICONO.exists():
 
     try:
         raiz.iconbitmap(str(RUTA_ICONO))
@@ -481,7 +481,7 @@ conexionBBDD()
 #====================================================
 #CENTRAR VENTANA EN LA PANTALLA
 #====================================================
-ancho_pantalla = raiz.winfo_screenmmwidth()
+ancho_pantalla = raiz.winfo_screenwidth()
 alto_pantalla = raiz.winfo_screenheight()
 
 posicion_x = int(
@@ -492,9 +492,9 @@ posicion_y = int(
     (alto_pantalla - alto) / 2
 )
 
-raiz.geometry(
-    f"{ancho} x {alto} + {posicion_x} + {posicion_y}"
-)
+#raiz.geometry(
+   # f"{ancho} x {alto} + {posicion_x} + {posicion_y}"
+#)
 #====================================================
 #FRAME DE DATOS
 #====================================================
@@ -511,7 +511,7 @@ miFrame.pack(
 #ID
 #====================================================
 
-label(
+Label(
     miFrame,
     text="ID"
 ).grid(
@@ -597,3 +597,263 @@ Entry(
     column=1
 )
 
+# ===================================================
+# APELLIDO
+# ===================================================
+
+Label(
+    miFrame,
+    text="Apellido"
+).grid(
+    row=3,
+    column=0,
+    padx=5,
+    pady=5
+)
+
+Entry(
+    miFrame,
+    textvariable=miApellido,
+    width=30
+).grid(
+    row=3,
+    column=1
+)
+
+
+# ===================================================
+# COMENTARIOS
+# ===================================================
+
+Label(
+    miFrame,
+    text="Comentarios"
+).grid(
+    row=5,
+    column=0,
+    padx=5,
+    pady=5
+)
+
+textComentario = Text(
+    miFrame,
+    width=30,
+    height=5
+)
+
+textComentario.grid(
+    row=5,
+    column=1
+)
+
+# ===================================================
+# SCROLL DE COMENTARIOS
+# ===================================================
+
+scroll = Scrollbar(
+    miFrame,
+    command=textComentario.yview
+)
+
+scroll.grid(
+    row=5,
+    column=2,
+    sticky="nsew"
+)
+
+textComentario.config(
+    yscrollcommand=scroll.set
+)
+
+
+# ===================================================
+# FRAME BOTONES
+# ===================================================
+
+frameBotones = Frame(
+    raiz
+)
+
+frameBotones.pack(
+    pady=10
+)
+
+
+# ===================================================
+# BOTON CREAR
+# ===================================================
+
+Button(
+    frameBotones,
+    text="Crear",
+    width=15,
+    command=crear
+).grid(
+    row=0,
+    column=0,
+    padx=5
+)
+
+# ===================================================
+# FRAME TABLA
+# ===================================================
+
+frameTabla = Frame(
+    raiz
+)
+
+frameTabla.pack(
+    fill="both",
+    expand=True,
+    padx=10,
+    pady=10
+)
+
+
+# ===================================================
+# TABLA TREEVIEW
+# ===================================================
+
+tabla = ttk.Treeview(
+    frameTabla,
+    columns=(
+        "ID",
+        "NOMBRE",
+        "PASSWORD",
+        "APELLIDO",
+        "DIRECCION",
+        "COMENTARIOS"
+    ),
+    show="headings"
+)
+
+# ===================================================
+# ENCABEZADOS
+# ===================================================
+
+tabla.heading(
+    "ID",
+    text="ID"
+)
+
+tabla.heading(
+    "NOMBRE",
+    text="Nombre"
+)
+
+tabla.heading(
+    "PASSWORD",
+    text="Password"
+)
+
+tabla.heading(
+    "APELLIDO",
+    text="Apellido"
+)
+
+tabla.heading(
+    "DIRECCION",
+    text="Dirección"
+)
+
+tabla.heading(
+    "COMENTARIOS",
+    text="Comentarios"
+)
+
+# ===================================================
+# ANCHO DE COLUMNAS
+# ===================================================
+
+tabla.column(
+    "ID",
+    width=50,
+    anchor="center"
+)
+
+tabla.column(
+    "NOMBRE",
+    width=150
+)
+
+tabla.column(
+    "PASSWORD",
+    width=120
+)
+
+tabla.column(
+    "APELLIDO",
+    width=150
+)
+
+tabla.column(
+    "DIRECCION",
+    width=200
+)
+
+tabla.column(
+    "COMENTARIOS",
+    width=300
+)
+
+# ===================================================
+# SCROLL VERTICAL DE LA TABLA
+# ===================================================
+
+scrollTabla = Scrollbar(
+    frameTabla,
+    orient=VERTICAL,
+    command=tabla.yview
+)
+
+tabla.configure(
+    yscrollcommand=scrollTabla.set
+)
+
+
+# ===================================================
+# MOSTRAR TABLA
+# ===================================================
+
+tabla.pack(
+    side=LEFT,
+    fill="both",
+    expand=True
+)
+
+scrollTabla.pack(
+    side=RIGHT,
+    fill="y"
+)
+
+
+# ===================================================
+# EVENTO SELECCIONAR REGISTRO
+# ===================================================
+
+tabla.bind(
+    "<<TreeviewSelect>>",
+    seleccionarRegistro
+)
+
+
+# ===================================================
+# CARGAR REGISTROS EXISTENTES
+# ===================================================
+
+cargarDatos()
+
+# ===================================================
+# CERRAR CON LA X DE LA VENTANA
+# ===================================================
+
+raiz.protocol(
+    "WM_DELETE_WINDOW",
+    salirAplicacion
+)
+
+#====================================================
+#EJECTAR APP
+#====================================================
+
+raiz.mainloop()
